@@ -1,0 +1,45 @@
+<file_details>
+
+namespace Application
+{
+    /// <summary>
+    /// Application class translated from "<program_name>" COBOL program.
+    /// </summary>
+    public class <class_name>
+    {
+        public int ReturnCode = 0;
+        public COBOLVar ProgramName;
+
+        <member_vars>
+
+        /// <summary>
+        /// Run the application.
+        /// </summary>
+        public int Run()
+        {
+            ProgramName = new COBOLVar("<program_name>", size: 64);
+            <member_var_assignments>
+
+            <file_data_attachments>
+
+            <main>
+            <delete_sort_files>
+
+            return ReturnCode;
+        }
+
+        <member_funcs>
+    }
+
+    /// <summary>
+    /// Entry point that instantiates and manages the application instance.
+    /// </summary>
+    public class EntryPoint
+    {
+        public static int Main()
+        {
+            var app = new <class_name>();
+            return app.Run();
+        }
+    }
+}

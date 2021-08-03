@@ -1,0 +1,132 @@
+import re
+
+JAVA_RESERVED_TOKENS = [
+    '_',  # Java 9
+    'abstract',
+    'assert',  # J2SE 1.4
+    'boolean',
+    'break',
+    'byte',
+    'case',
+    'catch',
+    'char',
+    'class',
+    'const',
+    'continue',
+    'default',
+    'do',
+    'double',
+    'else',
+    'enum',  # J2SE 5.0
+    'extends',
+    'false',
+    'final',
+    'finally',
+    'float',
+    'for',
+    'goto',
+    'if',
+    'implements',
+    'import',
+    'instanceof',
+    'int',
+    'interface',
+    'long',
+    'native',
+    'new',
+    'non-sealed',
+    'null',
+    'package',
+    'permits',
+    'private',
+    'protected',
+    'public',
+    'record',
+    'return',
+    'sealed',
+    'short',
+    'static',
+    'strictfp',  # J2SE 1.2
+    'super',
+    'switch',
+    'synchronized',
+    'this',
+    'throw',
+    'throws',
+    'transient',
+    'true',
+    'try',
+    'var',  # Java 10
+    'void',
+    'volatile',
+    'while',
+    'yield',
+    ';',
+    '(',
+    ')',
+    '{',
+    '}',
+    '[',
+    ']',
+    '+',
+    '-',
+    '*',
+    '/',
+    '^',
+    '=',
+    '==',
+    '!=',
+    '<',
+    '<=',
+    '>',
+    '>=',
+    '&',
+    '&&',
+    '|',
+    '||',
+    '--',
+    '++',
+    '?',
+    ',',
+
+    # Standard classes
+    'Void',
+    'Boolean',
+    'Byte',
+    'Short',
+    'Integer',
+    'Float',
+    'Double',
+    'Long',
+    'Character',
+    'String',
+    'Object',
+    'Array',
+    'ArrayList',
+    'List',
+    'LinkedList',
+    'Set',
+    'HashSet',
+    'LinkedHashSet',
+    'Map',
+    'HashMap',
+    'ConcurrentHashMap',
+    'IdentityHashMap',
+    'LinkedHashMap',
+    'WeakHashMap',
+    'Collection',
+
+    # Exception/error classes
+    'IllegalArgumentException'
+]
+
+JAVA_RESERVED_TOKENS_RE = [
+    re.compile(r'@.*')
+]
+
+JAVA_IGNORED_RE_SEQS = [
+    re.compile(r'@.*')
+]
+
+JAVA_IMPORT_REGEX = re.compile(r'import\s+(?P<name>[^;]*);')
+JAVA_PACKAGE_REGEX = re.compile(r'package\s+[^;]*;')

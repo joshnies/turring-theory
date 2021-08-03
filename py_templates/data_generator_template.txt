@@ -1,0 +1,22 @@
+from theory_data_gen.common import gen_item
+from theory_data_gen.generator import Generator
+
+
+class NewGenerator(Generator):
+    """
+    Data generator for "<theory_gen_name>":
+    <theory_gen_link>
+
+    Target: <theory_gen_target>
+    """
+
+    @staticmethod
+    def generate(args, write):
+        print('\nGenerating data for "<theory_gen_name>" --> <theory_gen_target>')
+
+        items = [
+<theory_gen_start>
+        ]
+
+        for i in items:
+            write(i)
