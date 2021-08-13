@@ -3,6 +3,7 @@ name: theory
 dependencies:
   - python=3.9
   - pip>=19.0
+  - pytest
   - jupyter
   - apple::tensorflow-deps
   - flask==1.1.2
