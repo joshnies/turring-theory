@@ -54,9 +54,11 @@ class Theory:
             path.join(base_dataset_path,
                       f'{lvp.value.lower()}_valid.csv') if valid_dataset_path is None else valid_dataset_path
         self.data_map_path = \
-            path.join(base_dataset_path, f'{lvp.value.lower()}_map.csv') if data_map_path is None else data_map_path
+            path.join(
+                base_dataset_path, f'{lvp.value.lower()}_map.csv') if data_map_path is None else data_map_path
 
-        self.case_name = path.basename(self.train_dataset_path).replace('.csv', '').replace('_train', '')
+        self.case_name = path.basename(self.train_dataset_path).replace(
+            '.csv', '').replace('_train', '')
         self.output_dir_path = path.join(output_dir_path, self.case_name)
 
         # Initialize brain
@@ -124,7 +126,8 @@ class Theory:
 
         # Pre-format file
         log('Formatting...')
-        input_lines = self.src_lang_def.format_file(input_file_path, request_data=request_data)
+        input_lines = self.src_lang_def.format_file(
+            input_file_path, request_data=request_data)
         log('Formatting successful')
         formatted_file_contents = '\n'.join(input_lines)
 
@@ -133,7 +136,8 @@ class Theory:
             open('temp/formatted.txt', 'w').write(formatted_file_contents)
 
         # Preprocess file contents and save to memory
-        masked_lines = self.veil.mask(text=formatted_file_contents, request_data=request_data)
+        masked_lines = self.veil.mask(
+            text=formatted_file_contents, request_data=request_data)
         masked_file_contents = '\n'.join(masked_lines)
 
         # Log warning if line counts don't match
@@ -150,7 +154,8 @@ class Theory:
 
         # Run MTL
         if self.has_mtl:
-            masked_lines = self.mtl.translate_all(masked_file_contents).splitlines()
+            masked_lines = self.mtl.translate_all(
+                masked_file_contents).splitlines()
 
         # Log warning if line counts don't match
         if len(masked_lines) != len(input_lines):
@@ -168,13 +173,15 @@ class Theory:
         can_write = output_file_path is not None
 
         # Open/create output file for writing
-        writer = open(output_file_path, 'w', newline='') if output_file_path is not None else None
+        writer = open(output_file_path, 'w',
+                      newline='') if output_file_path is not None else None
 
         incorrect_translation_count = 0
 
         for i, line in tenumerate(masked_lines, desc=f'Translating: {rel_input_file_path}'):
             input_line = input_lines[i].strip()
-            input_line_indent = len(input_lines[i]) - len(input_lines[i].lstrip())
+            input_line_indent = len(
+                input_lines[i]) - len(input_lines[i].lstrip())
             line_indent = len(line) - len(line.lstrip())
             line = line.strip()
 
@@ -196,7 +203,8 @@ class Theory:
 
                 # Update template processor delineator state
                 if self.has_template_processor:
-                    self.template_processor.update_delineator(input_line, input_line_indent)
+                    self.template_processor.update_delineator(
+                        input_line, input_line_indent)
 
                 # Update store
                 if self.has_store:
@@ -221,7 +229,8 @@ class Theory:
                 # Skip further processing if translated to empty string
                 if translated:
                     # Post-process translated line
-                    translated = self.postprocessor.postprocess_line(translated)
+                    translated = self.postprocessor.postprocess_line(
+                        translated)
 
                     # Replace relative mask tokens with global versions
                     translated = self.veil.from_relative(translated)
@@ -242,8 +251,10 @@ class Theory:
                     log(f'Error:', level=logging.WARNING)
                     log(e, level=logging.WARNING)
 
-                commented_inp_line = self.tar_lang_def.to_single_line_comment(src_line)
-                err_comment = self.tar_lang_def.to_single_line_comment(f'[Turring Theory] ERROR: Failed to translate.')
+                commented_inp_line = self.tar_lang_def.to_single_line_comment(
+                    src_line)
+                err_comment = self.tar_lang_def.to_single_line_comment(
+                    f'[Turring Theory] ERROR: Failed to translate.')
                 translated = f'{commented_inp_line}\t{err_comment}'
                 incorrect_translation_count += 1
 
@@ -282,7 +293,8 @@ class Theory:
         log(f'🎉 Successfully translated "{input_file_path}".')
 
         # Output neural network accuracy
-        nn_accuracy = (len(masked_lines) - incorrect_translation_count) / len(masked_lines) * 100
+        nn_accuracy = (len(masked_lines) -
+                       incorrect_translation_count) / len(masked_lines) * 100
         log('📈 Estimated accuracy: {:.4f}%'.format(nn_accuracy))
 
         return '\n'.join(output_lines)
@@ -339,7 +351,8 @@ class Theory:
         try:
             return lvp_tar_file_extension_map[self.lvp]
         except:
-            raise Exception(f'No target file extension mapping for LVP "{self.lvp.value}".')
+            raise Exception(
+                f'No target file extension mapping for LVP "{self.lvp.value}".')
 
     @staticmethod
     def __get_template_processor(lvp) -> Optional[TemplateProcessor]:
