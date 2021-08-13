@@ -26,20 +26,6 @@ AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
-# CELERY
-# CELERY_RESULT_BACKEND = 'celery_s3.backends.S3Backend'
-#
-# CELERY_S3_BACKEND_SETTINGS = {
-#     'aws_access_key_id': AWS_ACCESS_KEY_ID,
-#     'aws_secret_access_key': AWS_SECRET_ACCESS_KEY,
-#     'bucket': os.environ.get('CELERY_AWS_STORAGE_BUCKET_NAME'),
-# }
-# BROKER_URL = 'redis://localhost:6379'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-
 # Get LVP
 __lvp_name = os.environ.get('LVP')
 try:

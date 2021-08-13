@@ -213,7 +213,6 @@ class COBOLToCSharp9ITL(ITL):
                     if self.current_section is not None:
                         # Get section calls
                         section_calls = self.build_section_calls()
-                        print(f'Built section calls: {section_calls}')
 
                         # Replace section calls tag with section calls in template processor
                         section_translation = \
@@ -229,7 +228,6 @@ class COBOLToCSharp9ITL(ITL):
                     # Add paragraph to current section
                     added_paragraph = self.current_paragraph if self.current_paragraph is not None else name
                     self.current_section_paragraphs.append(added_paragraph)
-                    print(f'Added paragraph: {added_paragraph}')
 
                 # Add call to paragraph method into app "Run()" method
                 self.template_processor.tag_content[TEMPL_MAIN].append(f'{name}();')

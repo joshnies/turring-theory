@@ -1,13 +1,6 @@
 import logging
-
 import flask
 from flask import request, jsonify
-# from kombu.utils.url import safequote
-# import boto3
-# import progressbar
-# from botocore.exceptions import ClientError
-# from flask import url_for
-# from celery import Celery
 
 from cli import log
 from theory.core import Theory
@@ -19,16 +12,6 @@ from .services.translation import TranslationService
 # Initialize flask app
 app = flask.Flask(__name__)
 app.app_context().push()
-
-# Initialize AWS
-# aws_access_key = safequote(AWS_ACCESS_KEY_ID)
-# aws_secret_key = safequote(AWS_SECRET_ACCESS_KEY)
-# broker_url = f'sqs://{aws_access_key}:{aws_secret_key}@'
-
-# Initialize celery
-# celery -A api.app.celery worker --loglevel=debug
-# celery = Celery(app.name, broker=broker_url, backend='rpc://')
-# celery.conf.update(app.config)
 
 # Initialize Theory
 theory = Theory(
@@ -79,54 +62,3 @@ def translate():
     # Run translation
     output_path = TranslationService.translate(theory, input_path, data)
     return jsonify({'output_path': output_path})
-
-    # Run translation task async using celery
-    # task = translate_task.apply_async([input_path])
-
-    # return a URL for checking status
-    # return jsonify({'status_url': url_for('task_status', task_id=task.id)})
-
-# @celery.task()
-# def translate_task(input_path):
-#     """Background task that runs the translator."""
-#
-#     # self.update_state(state='STARTED')
-#
-#     # Translate file
-#     TranslationService.translate(theory, input_path)
-
-# @app.route('/status/<task_id>')
-# def task_status(task_id):
-#     task = translate_task.AsyncResult(task_id)
-#     if task.state == 'PENDING':
-#         # job did not start yet
-#         response = {
-#             'state': task.state,
-#             'current': 0,
-#             'total': 1,
-#             'status': 'Pending...'
-#         }
-#     elif task.state == 'STARTED':
-#         response = {
-#             'state': task.state,
-#             'status': 'Started...'
-#         }
-#     elif task.state != 'FAILURE':
-#         response = {
-#             'state': task.state,
-#             'current': task.info.get('current', 0),
-#             'total': task.info.get('total', 1),
-#             'status': task.info.get('status', '')
-#         }
-#         if 'result' in task.info:
-#             response['result'] = task.info['result']
-#     else:
-#         # something went wrong in the background job
-#         response = {
-#             'state': task.state,
-#             'current': 1,
-#             'total': 1,
-#             'status': str(task.info),  # this is the exception raised
-#         }
-#
-#     return jsonify(response)
