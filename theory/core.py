@@ -295,7 +295,7 @@ class Theory:
         # Output neural network accuracy
         nn_accuracy = (len(masked_lines) -
                        incorrect_translation_count) / len(masked_lines) * 100
-        log('📈 Estimated accuracy: {:.4f}%'.format(nn_accuracy))
+        log('📈 Estimated accuracy: {:.4f}%\n'.format(nn_accuracy))
 
         return '\n'.join(output_lines)
 

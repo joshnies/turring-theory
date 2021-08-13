@@ -15,12 +15,16 @@ class CSharpDefinition(StdLangDefinition):
         return f'{filename_wo_ext}.cs'
 
     @staticmethod
-    def create_project_files(project_path: str, added_file_paths: List[str] = None):
+    def create_project_files(
+        project_path: str,
+        added_file_paths: List[str] = None,
+    ):
         sln_name = 'Application'
         sln_path = path.join(project_path, sln_name)
 
         # Create VS project from template
-        os.system(f'cd {project_path} && dotnet new console -lang="C#" -n {sln_name}')
+        os.system(
+            f'cd {project_path} && dotnet new console -lang="C#" -n {sln_name}')
 
         # Create VS solution
         os.system(f'cd {project_path} && dotnet new sln -n {sln_name}')
