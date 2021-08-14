@@ -23,6 +23,15 @@ class TemplateProcessor:
         # Tag to be set as current on the next line
         self.next_tag = None
 
+    def reset(self):
+        """Reset state."""
+
+        self.delineator_map = {}
+        self.default_tag_content = {}
+        self.tag_content = {}
+        self.current_tag = ''
+        self.next_tag = None
+
     def update(self, line: str):
         """
         Update template state. Should be ran for each translated line.
@@ -70,7 +79,8 @@ class TemplateProcessor:
 
             # Replace tag with content
             content_str = '\n'.join(content)
-            template_contents = template_contents.replace(f'<{tag}>', content_str)
+            template_contents = template_contents.replace(
+                f'<{tag}>', content_str)
 
         return template_contents
 

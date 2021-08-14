@@ -29,15 +29,24 @@ from .lang_utils import get_language_definition
 
 
 class Theory:
-    """Core interaction for translation neural network."""
+    """Theory core."""
 
-    def __init__(self, lvp: LVP, hyperparams: Hyperparams, output_dir_path: str, base_dataset_path: str = 'data',
-                 train_dataset_path: str = None, valid_dataset_path: str = None, data_map_path: str = None,
-                 debug: bool = False):
+    def __init__(
+        self,
+        lvp: LVP,
+        hyperparams: Hyperparams,
+        output_dir_path: str,
+        base_dataset_path: str = 'data',
+        train_dataset_path: str = None,
+        valid_dataset_path: str = None,
+        data_map_path: str = None,
+        debug: bool = False,
+    ):
         """
         :param lvp: LVP for translation.
         :param hyperparams: Hyperparameters of the transformer model.
-        :param output_dir_path: Path to output directory for the saved model and checkpoints.
+        :param output_dir_path: Path to output directory for the saved model and
+            checkpoints.
         :param base_dataset_path: Base dataset path.
         :param train_dataset_path: Training dataset path.
         :param valid_dataset_path: Validation dataset path.
@@ -62,41 +71,14 @@ class Theory:
         self.output_dir_path = path.join(output_dir_path, self.case_name)
 
         # Initialize brain
-        self.brain = Brain(lvp, hyperparams, self.output_dir_path, train_dataset_path=self.train_dataset_path,
-                           valid_dataset_path=self.valid_dataset_path, debug=debug)
-
-        # Initialize components
-        self.veil = None
-        self.mtl = None
-        self.has_mtl = False
-        self.template_processor = None
-        self.has_template_processor = False
-        self.store = None
-        self.has_store = False
-        self.itl = None
-        self.postprocessor = None
-
-        # Get language definitions
-        self.src_lang_def = get_language_definition(lvp, is_target=False)
-        self.tar_lang_def = get_language_definition(lvp, is_target=True)
-
-    def restore(self):
-        """Restore brain's latest checkpoint."""
-
-        self.brain.restore_checkpoint()
-
-    def translate(self, input_file_path: str, output_file_path: str = None, request_data=None):
-        """
-        Translate input file.
-
-        :param input_file_path: Path to input source code file to translate.
-        :param output_file_path: Path to output source code file to translate.
-            If `None`, the translated text will be returned.
-        :param request_data: Request body data from "/translate" API endpoint.
-        :returns: Translated text if `output_file_path` is specified, otherwise `None`.
-        """
-
-        rel_input_file_path = input_file_path[12:]
+        self.brain = Brain(
+            lvp,
+            hyperparams,
+            self.output_dir_path,
+            train_dataset_path=self.train_dataset_path,
+            valid_dataset_path=self.valid_dataset_path,
+            debug=debug,
+        )
 
         # Initialize Veil
         self.veil = Veil(self.lvp)
@@ -118,6 +100,35 @@ class Theory:
 
         # Initialize post-processor
         self.postprocessor = self.__get_postprocessor()
+
+        # Get language definitions
+        self.src_lang_def = get_language_definition(lvp, is_target=False)
+        self.tar_lang_def = get_language_definition(lvp, is_target=True)
+
+    def restore(self):
+        """Restore brain's latest checkpoint."""
+
+        self.brain.restore_checkpoint()
+
+    def translate(self, input_file_path: str, output_file_path: str = None, request_data=None):
+        """
+        Translate input file.
+
+        :param input_file_path: Path to input source code file to translate.
+        :param output_file_path: Path to output source code file to translate.
+            If `None`, the translated text will be returned.
+        :param request_data: Request body data from "/translate" API endpoint.
+        :returns: Translated text if `output_file_path` is specified, otherwise
+            `None`.
+        """
+
+        rel_input_file_path = input_file_path[12:]
+
+        # Clear states
+        self.veil.reset()
+        self.template_processor.reset()
+        self.store.reset()
+        self.itl.reset()
 
         # Scan masked file contents to build initial store
         log('Initializing store...')
@@ -178,6 +189,7 @@ class Theory:
 
         incorrect_translation_count = 0
 
+        # Translate masked lines
         for i, line in tenumerate(masked_lines, desc=f'Translating: {rel_input_file_path}'):
             input_line = input_lines[i].strip()
             input_line_indent = len(
@@ -217,7 +229,8 @@ class Theory:
                     # Try to translate line with map
                     translated = self.itl.map(line)
 
-                    # Translate line via neural network if ITL had no available translation
+                    # Translate line via neural network if ITL had no available
+                    # translation
                     if translated is None:
                         translated = self.brain.translate(line)
                         log_translation('NN', line, translated)
@@ -299,7 +312,12 @@ class Theory:
 
         return '\n'.join(output_lines)
 
-    def translate_direct(self, line: str, from_relative: bool = True, unmask: bool = True) -> str:
+    def translate_direct(
+        self,
+        line: str,
+        from_relative: bool = True,
+        unmask: bool = True,
+    ) -> str:
         """
         Translate line without keeping state.
 
@@ -330,7 +348,11 @@ class Theory:
 
         return translated_line
 
-    def create_project_files(self, project_path: str, added_file_paths: List[str]) -> str:
+    def create_project_files(
+        self,
+        project_path: str,
+        added_file_paths: List[str],
+    ) -> str:
         """
         Create project files.
 
@@ -339,7 +361,10 @@ class Theory:
         :returns: Project path.
         """
 
-        return self.tar_lang_def.create_project_files(project_path, added_file_paths)
+        return self.tar_lang_def.create_project_files(
+            project_path,
+            added_file_paths,
+        )
 
     def get_target_file_extension(self) -> str:
         """
@@ -384,7 +409,13 @@ class Theory:
         else:
             raise Exception(f'No ITL found for LVP "{self.lvp}".')
 
-        return lvp_class(self.data_map_path, self.veil, self.store, self.template_processor, self.translate_direct)
+        return lvp_class(
+            self.data_map_path,
+            self.veil,
+            self.store,
+            self.template_processor,
+            self.translate_direct,
+        )
 
     def __get_mtl(self) -> Optional[MTL]:
         """

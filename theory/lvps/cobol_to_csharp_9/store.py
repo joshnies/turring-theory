@@ -37,12 +37,27 @@ class COBOLToCSharp9Store(Store):
         self.__deferred_translation = None
         self.__last_layout_item_built_was_root = False
 
+    def reset(self):
+        self.method_names = list()
+        self.file_data_map = dict()
+        self.layout = benedict()
+        self.is_layout_built = False
+        self.current_layout_keypath = ''
+        self.current_layout_level = 1
+        self.last_item_name = None
+        self.deferred_last_item_name = None
+        self.__member_var_defs = list()
+        self.__member_var_assignments = list()
+        self.__deferred_translation = None
+        self.__last_layout_item_built_was_root = False
+
     def scan(self, file_path: str):
         for src_line in open(file_path):
             line = src_line[6:72]
             # Build function list/order
             # Get regex match, stripping right whitespace to implicitly validate indent
-            match = re.match(r'^\s(?P<name>[0-9a-zA-Z\-:]+)(?:\s+SECTION)?\.(?:\s+EXIT\.)?$', line.rstrip())
+            match = re.match(
+                r'^\s(?P<name>[0-9a-zA-Z\-:]+)(?:\s+SECTION)?\.(?:\s+EXIT\.)?$', line.rstrip())
 
             if match is not None:
                 name = match.group('name')
@@ -66,7 +81,8 @@ class COBOLToCSharp9Store(Store):
             if group_match is not None:
                 # Add new group to layout
                 level = int(group_match.group('lvl'))
-                name = CobolDefinition.name_to_title_case(group_match.group('name'))
+                name = CobolDefinition.name_to_title_case(
+                    group_match.group('name'))
 
                 if level == 1:
                     self.current_layout_keypath = ''
@@ -86,7 +102,8 @@ class COBOLToCSharp9Store(Store):
                 var_match = re.match(COBOL_ELEM_ITEM_REGEX, line)
                 if var_match is not None:
                     level = int(var_match.group('lvl'))
-                    name = CobolDefinition.name_to_title_case(var_match.group('name'))
+                    name = CobolDefinition.name_to_title_case(
+                        var_match.group('name'))
 
                     if level != 88:
                         if level == 1:
@@ -130,7 +147,8 @@ class COBOLToCSharp9Store(Store):
         """Move up in the keypath."""
 
         # Remove last key from path
-        self.current_layout_keypath = '.'.join(self.current_layout_keypath.split('.')[:-1])
+        self.current_layout_keypath = '.'.join(
+            self.current_layout_keypath.split('.')[:-1])
 
     def __add_to_layout(self, key: str, val):
         """
@@ -187,4 +205,5 @@ class COBOLToCSharp9Store(Store):
 
         region_end = '\n#endregion\n' if is_root else '\n'
         self.__member_var_defs.append(f'private COBOLGroup {key};{region_end}')
-        self.__member_var_assignments.append(f'{key} = new COBOLGroup(\n\t{direct_children}\n);{region_end}')
+        self.__member_var_assignments.append(
+            f'{key} = new COBOLGroup(\n\t{direct_children}\n);{region_end}')

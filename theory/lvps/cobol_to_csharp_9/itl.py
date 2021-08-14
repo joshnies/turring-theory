@@ -37,7 +37,8 @@ class COBOLToCSharp9ITL(ITL):
             raise Exception("Store is required for COBOL --> C# 9 ITL.")
 
         if template_processor is None:
-            raise Exception("Template processor is required for COBOL --> C# 9 ITL.")
+            raise Exception(
+                "Template processor is required for COBOL --> C# 9 ITL.")
 
         self.current_section: Optional[str] = None
         self.current_paragraph: Optional[str] = None
@@ -46,6 +47,18 @@ class COBOLToCSharp9ITL(ITL):
         self.uses_db = False
 
         # IDMS
+        self.last_obtained_record = None
+
+    def reset(self):
+        """Reset state."""
+
+        super().reset()
+
+        self.current_section: Optional[str] = None
+        self.current_paragraph: Optional[str] = None
+        self.current_section_tag_idx: Optional[int] = None
+        self.current_section_paragraphs = list()
+        self.uses_db = False
         self.last_obtained_record = None
 
     def translate(self, seq: str, indent: int = 0):
@@ -159,9 +172,11 @@ class COBOLToCSharp9ITL(ITL):
                 file_var_name = self.veil.unmask(file_var_name)
 
                 if len(self.template_processor.tag_content[TEMPL_DEL_SORT_FILES]) == 0:
-                    self.template_processor.tag_content[TEMPL_DEL_SORT_FILES].append('\n// Delete temporary sort files')
+                    self.template_processor.tag_content[TEMPL_DEL_SORT_FILES].append(
+                        '\n// Delete temporary sort files')
 
-                self.template_processor.tag_content[TEMPL_DEL_SORT_FILES].append(f'{file_var_name}.delete();')
+                self.template_processor.tag_content[TEMPL_DEL_SORT_FILES].append(
+                    f'{file_var_name}.delete();')
 
             return f'{gen_mask_token(0)}.AttachData({gen_mask_token(1)});'
 
@@ -169,7 +184,8 @@ class COBOLToCSharp9ITL(ITL):
         match = re.match(COBOL_MOVE_REGEX, seq)
         if match is not None:
             result_lines = list()
-            tar_set_method = 'SetMatched' if match.group('corresponding') else 'Set'
+            tar_set_method = 'SetMatched' if match.group(
+                'corresponding') else 'Set'
             tar_quote = '"' if match.group('val_quote') is not None else ''
             destinations = re.split(r',?\s', match.group('destinations'))
 
@@ -177,7 +193,8 @@ class COBOLToCSharp9ITL(ITL):
                 if d.strip() == '':
                     continue
 
-                result_lines.append(f'{d}.{tar_set_method}({tar_quote}{gen_mask_token(0)}{tar_quote});')
+                result_lines.append(
+                    f'{d}.{tar_set_method}({tar_quote}{gen_mask_token(0)}{tar_quote});')
 
             return '\n'.join(result_lines)
 
@@ -190,11 +207,12 @@ class COBOLToCSharp9ITL(ITL):
                 name = self.veil.unmask(self.veil.from_relative(mask_token))
 
                 section_calls_tag = f'{SECTION_CALLS_TAG}\n' if self.current_section is not None \
-                                                                and len(self.current_section_paragraphs) == 0 else ''
+                    and len(self.current_section_paragraphs) == 0 else ''
 
                 # Set index in member funcs tag content of "section calls" tag
                 if section_calls_tag != '':
-                    self.current_section_tag_idx = len(self.template_processor.tag_content[TEMPL_MEMBER_FUNCS])
+                    self.current_section_tag_idx = len(
+                        self.template_processor.tag_content[TEMPL_MEMBER_FUNCS])
 
                 prefix = '' if self.current_paragraph is None else f'{section_calls_tag}}}\n\n'
 
@@ -219,7 +237,8 @@ class COBOLToCSharp9ITL(ITL):
                             self.template_processor.tag_content[TEMPL_MEMBER_FUNCS][self.current_section_tag_idx]
 
                         self.template_processor.tag_content[TEMPL_MEMBER_FUNCS][self.current_section_tag_idx] = \
-                            section_translation.replace(SECTION_CALLS_TAG, section_calls)
+                            section_translation.replace(
+                                SECTION_CALLS_TAG, section_calls)
 
                     # Set new current section
                     self.current_section = name
@@ -230,7 +249,8 @@ class COBOLToCSharp9ITL(ITL):
                     self.current_section_paragraphs.append(added_paragraph)
 
                 # Add call to paragraph method into app "Run()" method
-                self.template_processor.tag_content[TEMPL_MAIN].append(f'{name}();')
+                self.template_processor.tag_content[TEMPL_MAIN].append(
+                    f'{name}();')
 
                 return f'{prefix}public void {name}()\n{{{closing_bracket}'
 
@@ -246,7 +266,8 @@ class COBOLToCSharp9ITL(ITL):
 
             if match.group('using') is not None:
                 # Translate args
-                src_args_list = re.split(re.compile(r'\s+'), match.group('args'))
+                src_args_list = re.split(
+                    re.compile(r'\s+'), match.group('args'))
                 tar_args_list = list()
 
                 for src_arg in src_args_list:
@@ -302,7 +323,8 @@ class COBOLToCSharp9ITL(ITL):
                 if until == gen_mask_token(0):
                     condition_masked = until
                 else:
-                    condition_masked = self.translate_callback(until, from_relative=False, unmask=False)
+                    condition_masked = self.translate_callback(
+                        until, from_relative=False, unmask=False)
 
                 # Offset by mask indices +2
                 condition_masked = self.veil.offset(condition_masked, offset)
@@ -310,7 +332,8 @@ class COBOLToCSharp9ITL(ITL):
                 condition = self.veil.from_relative(condition_masked)
                 condition = self.veil.unmask(condition)
                 # Invert condition if possible (for simplification)
-                inverted_condition = CSharpDefinition.invert_condition(condition)
+                inverted_condition = CSharpDefinition.invert_condition(
+                    condition)
                 condition_was_inverted = inverted_condition is not None
                 condition = inverted_condition if condition_was_inverted else condition
                 # Determine prefix and suffix
@@ -382,11 +405,13 @@ class COBOLToCSharp9ITL(ITL):
             table_names = split_upper(set_name)
 
             if len(table_names) != 2:
-                raise Exception(f'Unhandled IDMS set name format in "OBTAIN OWNER WITHIN *" statement: "{seq}"')
+                raise Exception(
+                    f'Unhandled IDMS set name format in "OBTAIN OWNER WITHIN *" statement: "{seq}"')
 
             parent_table_name = table_names[0].lower()
             child_table_name = table_names[1].lower()
-            child_table_prefix = child_table_name[:4] if len(child_table_name) > 4 else child_table_name
+            child_table_prefix = child_table_name[:4] if len(
+                child_table_name) > 4 else child_table_name
             join_column_name = CobolDefinition.name_to_title_case(
                 f'{child_table_prefix.upper()}-{parent_table_name.upper()}'
             )
@@ -437,7 +462,8 @@ class COBOLToCSharp9ITL(ITL):
 
         if match is not None:
             if self.last_obtained_record is None:
-                log('No records were obtained before checking for DB-END-OF-SET.', level=logging.ERROR)
+                log('No records were obtained before checking for DB-END-OF-SET.',
+                    level=logging.ERROR)
                 return 'true'
 
             op = '==' if match.group('not') is None else '!='
@@ -448,7 +474,8 @@ class COBOLToCSharp9ITL(ITL):
 
         if match is not None:
             if self.last_obtained_record is None:
-                log('No records were obtained before checking for DB-END-OF-SET.', level=logging.ERROR)
+                log('No records were obtained before checking for DB-END-OF-SET.',
+                    level=logging.ERROR)
                 return 'if (true) {'
 
             op = '==' if match.group('not') is None else '!='
@@ -483,5 +510,6 @@ class COBOLToCSharp9ITL(ITL):
     def build_section_calls(self) -> str:
         """Build section calls for current section."""
 
-        section_calls = list(map(lambda p: f'{p}();', self.current_section_paragraphs))
+        section_calls = list(
+            map(lambda p: f'{p}();', self.current_section_paragraphs))
         return '\n'.join(section_calls)

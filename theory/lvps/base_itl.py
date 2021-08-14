@@ -40,6 +40,10 @@ class ITL:
 
         log('Data map built successfully.')
 
+    def reset(self):
+        """Reset state."""
+        pass
+
     @staticmethod
     def __rm_all_whitespace(seq: str):
         return re.sub(re.compile(r'\s+'), '', seq)

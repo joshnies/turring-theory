@@ -30,6 +30,12 @@ class Veil:
         self.tokens = benedict()
         self.current_relative_tokens = list()
 
+    def reset(self):
+        """Reset state."""
+
+        self.tokens = benedict()
+        self.current_relative_tokens = list()
+
     def mask(self, file_path: str = None, text: str = None, request_data=None) -> List[str]:
         """
         Mask file contents or text.
@@ -49,13 +55,15 @@ class Veil:
         elif text is not None:
             file_contents = text
         else:
-            raise Exception('`file_path` or `text` arg is required for `Veil.mask`.')
+            raise Exception(
+                '`file_path` or `text` arg is required for `Veil.mask`.')
 
         processed = list()
 
         # Preprocess file contents to prepare for line-by-line masking.
         # This may include masking as well, depending on the source language.
-        file_contents = self.preprocessor.preprocess(file_contents, request_data)
+        file_contents = self.preprocessor.preprocess(
+            file_contents, request_data)
 
         # Mask individual lines
         for line in file_contents.splitlines():
@@ -69,7 +77,8 @@ class Veil:
             # Split line
             processed_line = line
             offset = 0
-            split = [(match_to_str(m), m.span()) for m in re.finditer(self.preprocessor.line_split_regex, line)]
+            split = [(match_to_str(m), m.span())
+                     for m in re.finditer(self.preprocessor.line_split_regex, line)]
 
             for s_tuple in split:
                 s = s_tuple[0].strip()
@@ -108,7 +117,8 @@ class Veil:
                                 mask_token = k
                                 break
 
-                    processed_line = replace_str_range(processed_line, mask_token, offset_range_tuple(s_span, offset))
+                    processed_line = replace_str_range(
+                        processed_line, mask_token, offset_range_tuple(s_span, offset))
 
                     # Update offset
                     offset = len(processed_line) - len(line)
@@ -163,7 +173,8 @@ class Veil:
             self.current_relative_tokens.append(m_str)
 
             # Replace global mask token with relative version
-            relative_text = replace_str_range(relative_text, relative_mask_token, match.span())
+            relative_text = replace_str_range(
+                relative_text, relative_mask_token, match.span())
 
         return relative_text
 
@@ -186,14 +197,16 @@ class Veil:
             index = int(m_str[6:-1])
 
             if index >= len(self.current_relative_tokens) or len(self.current_relative_tokens) == 0:
-                raise Exception('Too many relative mask tokens found during replacement.')
+                raise Exception(
+                    'Too many relative mask tokens found during replacement.')
 
             replace_with = self.current_relative_tokens[index]
 
             # Replace global mask tokens with relative versions, prefixed with temporary token to prevent overrides
             # during replacement
             global_text = global_text.replace(
-                m_str, replace_with[:1] + RELATIVE_REPLACEMENT_TOKEN + replace_with[1:], 1
+                m_str, replace_with[:1] +
+                RELATIVE_REPLACEMENT_TOKEN + replace_with[1:], 1
             )
 
         # Remove relative replacement tokens

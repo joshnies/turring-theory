@@ -12,6 +12,10 @@ class Store(ABC):
         """
         pass
 
+    def reset():
+        """Reset state."""
+        pass
+
     def update(self, line: str):
         """
         Update state.
