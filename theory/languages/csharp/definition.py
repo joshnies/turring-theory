@@ -20,7 +20,7 @@ class CSharpDefinition(StdLangDefinition):
         project_path: str,
         added_file_paths: List[str] = None,
     ):
-        log('Creating project files...')
+        log('Creating project files...\n')
 
         sln_name = 'Application'
         sln_path = path.join(project_path, sln_name)
@@ -49,7 +49,8 @@ class CSharpDefinition(StdLangDefinition):
         # Format project files
         CSharpDefinition.format_project_files(project_path)
 
-        log('\nProject creation successful.')
+        print()  # print new line
+        log('Project creation successful.')
 
         return path.join(project_path, sln_name)
 

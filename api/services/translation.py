@@ -8,7 +8,6 @@ import shutil
 from api.config import AWS_STORAGE_BUCKET_NAME
 from cli import log
 from theory.core import Theory
-
 from ..config import DEBUG
 
 
@@ -80,7 +79,8 @@ class TranslationService:
 
         # Upload output zip to S3
         remote_out_path = f'outputs/' + path.basename(zip_file_path)
-        s3.Bucket(AWS_STORAGE_BUCKET_NAME).upload_file(zip_file_path, remote_out_path)
+        s3.Bucket(AWS_STORAGE_BUCKET_NAME).upload_file(
+            zip_file_path, remote_out_path)
 
         # Delete output file from local storage
         if not DEBUG:
@@ -99,12 +99,13 @@ class TranslationService:
         if filename.strip() == '':
             return None
 
-        log(f'Downloading {s3_key}...')
+        log(f'Downloading "{s3_key}"...')
         local_inp_path = path.join(temp_inp_dir, filename)
         bucket.download_file(s3_key, local_inp_path)
 
         # Translate input file
-        local_out_path = path.join(temp_out_dir, theory.tar_lang_def.get_translated_file_name(filename))
+        local_out_path = path.join(
+            temp_out_dir, theory.tar_lang_def.get_translated_file_name(filename))
         theory.translate(local_inp_path, local_out_path, request_data=data)
 
         # Delete downloaded input file
