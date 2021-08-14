@@ -19,6 +19,7 @@ class COBOLToCSharp9Store(Store):
     def __init__(self, template_processor: TemplateProcessor, veil: Veil):
         """
         :param template_processor: Template processor.
+        :param veil: Veil instance.
         """
 
         self.template_processor = template_processor
@@ -54,10 +55,13 @@ class COBOLToCSharp9Store(Store):
     def scan(self, file_path: str):
         for src_line in open(file_path):
             line = src_line[6:72]
+
             # Build function list/order
             # Get regex match, stripping right whitespace to implicitly validate indent
             match = re.match(
-                r'^\s(?P<name>[0-9a-zA-Z\-:]+)(?:\s+SECTION)?\.(?:\s+EXIT\.)?$', line.rstrip())
+                r'^\s(?P<name>[0-9a-zA-Z\-:]+)(?:\s+SECTION)?\.(?:\s+EXIT\.)?$',
+                line.rstrip(),
+            )
 
             if match is not None:
                 name = match.group('name')
@@ -76,7 +80,6 @@ class COBOLToCSharp9Store(Store):
 
         # Update layout
         if self.template_processor.current_tag == TEMPL_MEMBER_VAR_ASSIGNMENTS:
-            # if re.match(COBOL_CUSTOM_SECTION_REGEX, line) is None:
             group_match = re.match(COBOL_GROUP_ITEM_REGEX, line)
             if group_match is not None:
                 # Add new group to layout
@@ -206,4 +209,5 @@ class COBOLToCSharp9Store(Store):
         region_end = '\n#endregion\n' if is_root else '\n'
         self.__member_var_defs.append(f'private COBOLGroup {key};{region_end}')
         self.__member_var_assignments.append(
-            f'{key} = new COBOLGroup(\n\t{direct_children}\n);{region_end}')
+            f'{key} = new COBOLGroup(\n\t{direct_children}\n);{region_end}'
+        )

@@ -131,15 +131,15 @@ class Theory:
         self.itl.reset()
 
         # Scan masked file contents to build initial store
-        log('Initializing store...')
+        log('Scanning file...')
         self.store.scan(input_file_path)
-        log('Store ready.')
+        log('Scan successful.')
 
         # Pre-format file
         log('Formatting...')
         input_lines = self.src_lang_def.format_file(
             input_file_path, request_data=request_data)
-        log('Formatting successful')
+        log('Formatting successful.')
         formatted_file_contents = '\n'.join(input_lines)
 
         # Output formatted input file if debug mode
@@ -190,7 +190,9 @@ class Theory:
         incorrect_translation_count = 0
 
         # Translate masked lines
-        for i, line in tenumerate(masked_lines, desc=f'Translating: {rel_input_file_path}'):
+        serialized_file_path = "/".join(rel_input_file_path.split("/")[1:])
+        translation_desc = f'Translating: {serialized_file_path}'
+        for i, line in tenumerate(masked_lines, desc=translation_desc):
             input_line = input_lines[i].strip()
             input_line_indent = len(
                 input_lines[i]) - len(input_lines[i].lstrip())
@@ -303,7 +305,7 @@ class Theory:
         # Post-format file
         self.tar_lang_def.format_file(output_file_path)
 
-        log(f'🎉 Successfully translated "{input_file_path}".')
+        log(f'🎉 Successfully translated "{serialized_file_path}".')
 
         # Output neural network accuracy
         nn_accuracy = (len(masked_lines) -

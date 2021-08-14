@@ -7,13 +7,16 @@ import wandb
 
 from cli import log
 from theory.lvp import LVP
+from api.config import DEBUG
 from .custom_schedule import CustomSchedule
 from .datasets import load_datasets
 from .hyperparams import Hyperparams
 from .transformer import Transformer
 
 # Global translation neural network architecture
-loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction='none')
+loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
+    from_logits=True, reduction='none'
+)
 
 
 class Brain:
@@ -38,31 +41,37 @@ class Brain:
         self.__load_datasets()
 
         self.learning_rate = CustomSchedule(self.hyperparams.d_model)
-        self.optimizer = tf.keras.optimizers.Adam(self.learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
+        self.optimizer = tf.keras.optimizers.Adam(
+            self.learning_rate, beta_1=0.9, beta_2=0.98, epsilon=1e-9)
         self.transformer = Transformer(self.hyperparams.num_layers, self.hyperparams.d_model,
                                        self.hyperparams.num_heads, self.hyperparams.dff, self.input_vocab_size,
                                        self.target_vocab_size, pe_input=self.input_vocab_size,
                                        pe_target=self.target_vocab_size, rate=self.hyperparams.dropout_rate)
 
         # Output hyperparams
-        # TODO: Use TensorFlow model's `.summary()` method instead
-        print(self.hyperparams)
+        if DEBUG:
+            # TODO: Use TensorFlow model's `.summary()` method instead
+            print(self.hyperparams)
 
         # Configure checkpoints
         self.checkpoint_path = path.join(self.output_dir_path, 'checkpoints')
 
-        self.ckpt = tf.train.Checkpoint(transformer=self.transformer, optimizer=self.optimizer)
-        self.ckpt_manager = tf.train.CheckpointManager(self.ckpt, self.checkpoint_path, max_to_keep=10)
+        self.ckpt = tf.train.Checkpoint(
+            transformer=self.transformer, optimizer=self.optimizer)
+        self.ckpt_manager = tf.train.CheckpointManager(
+            self.ckpt, self.checkpoint_path, max_to_keep=10)
 
     def __load_datasets(self):
         """Load and process the training and validation datasets."""
 
         # Validate dataset paths
         if not path.exists(self.train_dataset_path):
-            raise Exception(f'Training dataset at path "{self.train_dataset_path}" does not exist.')
+            raise Exception(
+                f'Training dataset at path "{self.train_dataset_path}" does not exist.')
 
         if not path.exists(self.valid_dataset_path):
-            raise Exception(f'Validation dataset at path "{self.valid_dataset_path}" does not exist.')
+            raise Exception(
+                f'Validation dataset at path "{self.valid_dataset_path}" does not exist.')
 
         # Load datasets
         train_examples, val_examples = load_datasets(train_path=self.train_dataset_path,
@@ -78,7 +87,9 @@ class Brain:
         if path.exists(f'{src_tokenizer_prefix}.subwords'):
             # Load source tokenizer
             log('Loading source tokenizer...')
-            self.tokenizer_src = tfds.deprecated.text.SubwordTextEncoder.load_from_file(src_tokenizer_prefix)
+            self.tokenizer_src = tfds.deprecated.text.SubwordTextEncoder.load_from_file(
+                src_tokenizer_prefix
+            )
         else:
             # Build and save source tokenizer
             log('Building source tokenizer from corpus...')
@@ -89,7 +100,8 @@ class Brain:
         if path.exists(f'{tar_tokenizer_prefix}.subwords'):
             # Load target tokenizer
             log('Loading target tokenizer...')
-            self.tokenizer_tar = tfds.deprecated.text.SubwordTextEncoder.load_from_file(tar_tokenizer_prefix)
+            self.tokenizer_tar = tfds.deprecated.text.SubwordTextEncoder.load_from_file(
+                tar_tokenizer_prefix)
         else:
             # Build and save target tokenizer
             log('Building target tokenizer from corpus...')
@@ -110,7 +122,8 @@ class Brain:
             return lang1, lang2
 
         def tf_encode(pt, en):
-            result_pt, result_en = tf.py_function(encode, [pt, en], [tf.int64, tf.int64])
+            result_pt, result_en = tf.py_function(
+                encode, [pt, en], [tf.int64, tf.int64])
             result_pt.set_shape([None])
             result_en.set_shape([None])
 
@@ -121,7 +134,8 @@ class Brain:
         self.train_dataset = self.train_dataset.cache()
         self.train_dataset = self.train_dataset.shuffle(self.hyperparams.buffer_size).padded_batch(
             self.hyperparams.batch_size)
-        self.train_dataset = self.train_dataset.prefetch(tf.data.experimental.AUTOTUNE)
+        self.train_dataset = self.train_dataset.prefetch(
+            tf.data.experimental.AUTOTUNE)
 
         # Validation dataset
         self.val_dataset = val_examples.map(tf_encode)
@@ -219,16 +233,20 @@ class Brain:
             tar_inp = tar[:, :-1]
             tar_real = tar[:, 1:]
 
-            enc_padding_mask, combined_mask, dec_padding_mask = self.create_masks(inp, tar_inp)
+            enc_padding_mask, combined_mask, dec_padding_mask = self.create_masks(
+                inp, tar_inp)
 
             with tf.GradientTape() as tape:
                 predictions, _ = self.transformer((inp, tar_inp),
-                                                  mask=[enc_padding_mask, combined_mask, dec_padding_mask],
+                                                  mask=[
+                                                      enc_padding_mask, combined_mask, dec_padding_mask],
                                                   training=True)
                 loss = self.loss_function(tar_real, predictions)
 
-            gradients = tape.gradient(loss, self.transformer.trainable_variables)
-            self.optimizer.apply_gradients(zip(gradients, self.transformer.trainable_variables))
+            gradients = tape.gradient(
+                loss, self.transformer.trainable_variables)
+            self.optimizer.apply_gradients(
+                zip(gradients, self.transformer.trainable_variables))
 
             train_loss(loss)
             train_accuracy(self.accuracy_function(tar_real, predictions))
@@ -252,13 +270,15 @@ class Brain:
 
             # Save checkpoint
             ckpt_save_path = self.ckpt_manager.save()
-            log('Saving checkpoint for epoch {} at {}'.format(epoch + 1, ckpt_save_path))
+            log('Saving checkpoint for epoch {} at {}'.format(
+                epoch + 1, ckpt_save_path))
 
             # Log epoch results
             loss = train_loss.result()
             accuracy = train_accuracy.result()
             time_taken = time.time() - start
-            log('Epoch {}\tLoss {:.4f}\tAccuracy {:.4f}'.format(epoch + 1, loss, accuracy))
+            log('Epoch {}\tLoss {:.4f}\tAccuracy {:.4f}'.format(
+                epoch + 1, loss, accuracy))
             log('Epoch took {}s\n'.format(time_taken))
 
             if self.enable_wandb:
@@ -295,11 +315,13 @@ class Brain:
 
         # NOTE: Arbitrary max length of 512
         for _ in range(512):
-            enc_padding_mask, combined_mask, dec_padding_mask = self.create_masks(encoder_input, output)
+            enc_padding_mask, combined_mask, dec_padding_mask = self.create_masks(
+                encoder_input, output)
 
             # predictions.shape: (batch_size, seq_len, vocab_size)
             predictions, _ = self.transformer((encoder_input, output),
-                                              mask=[enc_padding_mask, combined_mask, dec_padding_mask],
+                                              mask=[
+                                                  enc_padding_mask, combined_mask, dec_padding_mask],
                                               training=False)
 
             # Select the last word from the seq_len dimension
@@ -322,6 +344,7 @@ class Brain:
 
         # Translate
         result = self.__evaluate(input.strip())
-        result = self.tokenizer_tar.decode([i for i in result if i < self.tokenizer_tar.vocab_size])
+        result = self.tokenizer_tar.decode(
+            [i for i in result if i < self.tokenizer_tar.vocab_size])
 
         return result

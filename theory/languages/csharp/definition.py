@@ -4,6 +4,7 @@ from os import path
 from typing import List, Optional
 
 from theory.languages.std.definition import StdLangDefinition
+from cli import log
 
 
 class CSharpDefinition(StdLangDefinition):
@@ -19,12 +20,15 @@ class CSharpDefinition(StdLangDefinition):
         project_path: str,
         added_file_paths: List[str] = None,
     ):
+        log('Creating project files...')
+
         sln_name = 'Application'
         sln_path = path.join(project_path, sln_name)
 
         # Create VS project from template
         os.system(
-            f'cd {project_path} && dotnet new console -lang="C#" -n {sln_name}')
+            f'cd {project_path} && dotnet new console -lang="C#" -n {sln_name}',
+        )
 
         # Create VS solution
         os.system(f'cd {project_path} && dotnet new sln -n {sln_name}')
@@ -44,6 +48,8 @@ class CSharpDefinition(StdLangDefinition):
 
         # Format project files
         CSharpDefinition.format_project_files(project_path)
+
+        log('\nProject creation successful.')
 
         return path.join(project_path, sln_name)
 
