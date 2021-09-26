@@ -497,6 +497,7 @@ COBOL_RESERVED_TOKENS = [
     'TITLE',
     'TO',
     'TOP',
+    'TOP-OF-PAGE',
     'TRACE',
     'TRAILING',
     'TRUE',
@@ -701,6 +702,8 @@ COBOL_WRITE_AFTER_ADVANCING_REGEX = re.compile(
     rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+AFTER\s+ADVANCING(?:\s+(?:PAGE|LINE))?$')
 COBOL_WRITE_AFTER_ADVANCING_N_LINES_REGEX = re.compile(
     rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+AFTER\s+ADVANCING\s+{gen_mask_token(2)}(?:\s+LINES?|PAGE)?$')
+COBOL_WRITE_AFTER_ADVANCING_TOP_OF_PAGE_REGEX = re.compile(
+    rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+AFTER\s+ADVANCING\s+TOP-OF-PAGE$')
 COBOL_WRITE_BEFORE_ADVANCING_REGEX = re.compile(
     rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+BEFORE\s+ADVANCING(?:\s+(?:PAGE|LINE))?$')
 COBOL_WRITE_BEFORE_ADVANCING_N_LINES_REGEX = re.compile(
