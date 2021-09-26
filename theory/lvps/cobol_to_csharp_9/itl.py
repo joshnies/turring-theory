@@ -8,7 +8,7 @@ from theory.lvps.base_template_processor import TemplateProcessor
 from theory.lvps.cobol_to_csharp_9.constants import COBOL_TO_CSHARP_IGNORED_SEQS, COBOL_TO_CSHARP_IGNORED_SEQ_REGEXES, \
     COBOL_TO_CSHARP_ITL_MAP, COBOL_TO_CSHARP_ITL_REGEX_MAP, SECTION_CALLS_TAG
 from theory.lvps.base_itl import ITL
-from theory.languages.cobol.constants import COBOL_PROGRAM_ID_REGEX, COBOL_AUTHOR_REGEX, COBOL_DATE_WRITTEN_REGEX, \
+from theory.languages.cobol.constants import COBOL_FILE_SELECT_REGEX, COBOL_PROGRAM_ID_REGEX, COBOL_AUTHOR_REGEX, COBOL_DATE_WRITTEN_REGEX, \
     COBOL_PARAGRAPH_OR_SECTION_REGEX, COBOL_CALL_REGEX, COBOL_PERFORM_CALL_REGEX, COBOL_BOOL_ITEM_WITH_VAL_REGEX, \
     COBOL_BOOL_ITEM_WITH_MULTIPLE_VALS_REGEX, COBOL_BOOL_ITEM_THRU_REGEX, \
     COBOL_READ_AT_END_REGEX, COBOL_READ_INTO_AT_END_REGEX, COBOL_MOVE_REGEX, COBOL_SUBVALUE_REGEX, \
@@ -17,7 +17,7 @@ from theory.languages.cobol.constants import COBOL_PROGRAM_ID_REGEX, COBOL_AUTHO
     COBOL_IDMS_OBTAIN_WITHIN_USING_REGEX, COBOL_FILE_DATA_REGEX
 from theory.languages.cobol.definition import CobolDefinition
 from theory.lvps.cobol_to_csharp_9.store import COBOLToCSharp9Store
-from theory.lvps.cobol_to_csharp_9.template_processor import TEMPL_MAIN, TEMPL_MEMBER_VAR_ASSIGNMENTS, \
+from theory.lvps.cobol_to_csharp_9.template_processor import TEMPL_FILE_VAR_ASSIGNMENTS, TEMPL_FILE_VARS, TEMPL_MAIN, TEMPL_MEMBER_VAR_ASSIGNMENTS, \
     TEMPL_MEMBER_VARS, TEMPL_DEL_SORT_FILES, TEMPL_MEMBER_FUNCS
 from theory.utils import gen_mask_token, split_upper, rreplace
 from theory.veil import Veil
@@ -162,6 +162,19 @@ class COBOLToCSharp9ITL(ITL):
                    f'conditionVar: {parent_item},\n\t' \
                    f'conditionFunc: item => item.value >= {thru_start} && item.value <= {thru_end}\n' \
                    f');'
+
+        # Translate file vars
+        match = re.match(COBOL_FILE_SELECT_REGEX, seq)
+        if match is not None:
+            var_def = self.veil.unmask(self.veil.from_relative(
+                f'private COBOLFile {gen_mask_token(0)};'))
+            assignment = self.veil.unmask(self.veil.from_relative(
+                f'{gen_mask_token(0)} = new COBOLFile(@"{gen_mask_token(0)}");'))
+            self.template_processor.tag_content[TEMPL_FILE_VARS].append(
+                var_def)
+            self.template_processor.tag_content[TEMPL_FILE_VAR_ASSIGNMENTS].append(
+                assignment)
+            return translation
 
         # Translate file data attachments
         match = re.match(COBOL_FILE_DATA_REGEX, seq)

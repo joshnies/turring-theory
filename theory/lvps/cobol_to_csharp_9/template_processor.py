@@ -11,6 +11,8 @@ TEMPL_PROGRAM_NAME = 'program_name'
 TEMPL_CLASS_NAME = 'class_name'
 TEMPL_MEMBER_VARS = 'member_vars'
 TEMPL_MEMBER_VAR_ASSIGNMENTS = 'member_var_assignments'
+TEMPL_FILE_VARS = 'file_vars'
+TEMPL_FILE_VAR_ASSIGNMENTS = 'file_var_assignments'
 TEMPL_FILE_DATA_ATTACHMENTS = 'file_data_attachments'
 TEMPL_MEMBER_FUNCS = 'member_funcs'
 TEMPL_MAIN = 'main'
@@ -41,6 +43,8 @@ class COBOLToCSharp9TemplateProcessor(TemplateProcessor):
             TEMPL_CLASS_NAME: list(),
             TEMPL_MEMBER_VARS: list(),
             TEMPL_MEMBER_VAR_ASSIGNMENTS: list(),
+            TEMPL_FILE_VARS: list(),
+            TEMPL_FILE_VAR_ASSIGNMENTS: list(),
             TEMPL_FILE_DATA_ATTACHMENTS: list(),
             TEMPL_MEMBER_FUNCS: list(),
             TEMPL_MAIN: list(),

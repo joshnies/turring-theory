@@ -11,6 +11,8 @@ namespace Application
         public COBOLVar ProgramName;
 
         <member_vars>
+        
+        <file_vars>
 
         /// <summary>
         /// Run the application.
@@ -20,6 +22,7 @@ namespace Application
             ProgramName = new COBOLVar("<program_name>", size: 64);
             <member_var_assignments>
 
+            <file_var_assignments>
             <file_data_attachments>
 
             <main>
