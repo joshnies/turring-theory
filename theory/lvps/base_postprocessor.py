@@ -10,10 +10,8 @@ class Postprocessor:
 
         # Escape newlines except when within string literals
         res = res.replace(r'\n', '\n') \
-            .replace("'\n", r"'\n") \
-            .replace("\n'", r"\n'") \
-            .replace('"\n', r'"\n') \
-            .replace('\n"', r'\n"')
+            .replace("'\n'", r"'\n'") \
+            .replace('"\n"', r'"\n"')
 
         return res
 

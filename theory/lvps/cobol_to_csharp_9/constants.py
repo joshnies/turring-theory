@@ -140,10 +140,9 @@ COBOL_TO_CSHARP_ITL_REGEX_MAP = {
     COBOL_WHEN_OTHER_MOVE_REGEX: f'default:\n{gen_mask_token(1)}.Set({gen_mask_token(0)});\nbreak;',
     COBOL_END_EVALUATE_REGEX: '}',
     # File IO
-    # COBOL_FILE_SELECT_REGEX: f'{gen_mask_token(0)} = new COBOLFile(@"{gen_mask_token(1)}");',
     COBOL_WRITE_REGEX: f'{gen_mask_token(0)}.Append({gen_mask_token(1)});',
     COBOL_WRITE_AFTER_ADVANCING_REGEX: f'{gen_mask_token(0)}.AppendLine({gen_mask_token(1)}.ToString());',
-    COBOL_WRITE_AFTER_ADVANCING_TOP_OF_PAGE_REGEX: rf'{gen_mask_token(0)}.AppendLine("\nTOP OF PAGE\n" + {gen_mask_token(1)}.ToString());',
+    COBOL_WRITE_AFTER_ADVANCING_TOP_OF_PAGE_REGEX: rf'{gen_mask_token(0)}.AppendLine("\n" + {gen_mask_token(1)}.ToString());',
     COBOL_WRITE_AFTER_ADVANCING_N_LINES_REGEX: rf"{gen_mask_token(0)}.Append(new string('\n', {gen_mask_token(2)}) + {gen_mask_token(1)}.ToString());",
     COBOL_WRITE_BEFORE_ADVANCING_REGEX: rf'{gen_mask_token(0)}.Append({gen_mask_token(1)}.ToString() + "\n");',
     COBOL_WRITE_BEFORE_ADVANCING_N_LINES_REGEX: rf"{gen_mask_token(0)}.Append({gen_mask_token(1)}.ToString() + new string('\n', {gen_mask_token(2)}));",
