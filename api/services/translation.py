@@ -5,10 +5,9 @@ from uuid import uuid4
 import boto3
 import shutil
 
-from api.config import AWS_STORAGE_BUCKET_NAME
+from api.config import AWS_STORAGE_BUCKET_NAME, DEBUG
 from cli import log
 from theory.core import Theory
-from ..config import DEBUG
 
 
 class TranslationService:

@@ -16,7 +16,7 @@ DEBUG=1
 # Language-version pair this API instance is dedicated to
 LVP=cobol_to_csharp_9
 # Output directory path containing saved checkpoints and tokenizer vocabularies
-OUTPUT_DIR=output
+MODEL_DIR=output
 # Training dataset path
 TRAIN_DATASET_PATH=data/cobol_to_csharp_9_train.csv
 # Validation dataset path

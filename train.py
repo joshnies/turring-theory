@@ -7,20 +7,29 @@ from theory.nn.hyperparams import Hyperparams
 
 # Get command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--base-data-path', help='Base dataset path (e.g. "data")', default='data')
+parser.add_argument('--base-data-path',
+                    help='Base dataset path (e.g. "data")', default='data')
 parser.add_argument('--train-data', help='Training dataset file path')
 parser.add_argument('--valid-data', help='Validation dataset file path')
-parser.add_argument('-o', '--out', help='Saved model and checkpoint directory', default='output')
+parser.add_argument(
+    '-o', '--out', help='Saved model and checkpoint directory', default='output')
 parser.add_argument('-l', '--lvp', help='Language-version pair', required=True)
-parser.add_argument('-e', '--epochs', help='Number of epochs', type=int, default=DEFAULT_HYPERPARAMS.epochs)
-parser.add_argument('--buffer-size', help='Buffer size', type=int, default=DEFAULT_HYPERPARAMS.buffer_size)
-parser.add_argument('--batch-size', help='Batch size', type=int, default=DEFAULT_HYPERPARAMS.batch_size)
-parser.add_argument('--layers', help='Number of layers', type=int, default=DEFAULT_HYPERPARAMS.num_layers)
-parser.add_argument('--d-model', help='d-model size', type=int, default=DEFAULT_HYPERPARAMS.d_model)
+parser.add_argument('-e', '--epochs', help='Number of epochs',
+                    type=int, default=DEFAULT_HYPERPARAMS.epochs)
+parser.add_argument('--buffer-size', help='Buffer size',
+                    type=int, default=DEFAULT_HYPERPARAMS.buffer_size)
+parser.add_argument('--batch-size', help='Batch size',
+                    type=int, default=DEFAULT_HYPERPARAMS.batch_size)
+parser.add_argument('--layers', help='Number of layers',
+                    type=int, default=DEFAULT_HYPERPARAMS.num_layers)
+parser.add_argument('--d-model', help='d-model size',
+                    type=int, default=DEFAULT_HYPERPARAMS.d_model)
 parser.add_argument('--dff', help='Size of the dense feed-forward neural network', type=int,
                     default=DEFAULT_HYPERPARAMS.dff)
-parser.add_argument('--heads', help='Number of attention heads', type=int, default=DEFAULT_HYPERPARAMS.num_heads)
-parser.add_argument('--dropout', help='Dropout rate', type=float, default=DEFAULT_HYPERPARAMS.dropout_rate)
+parser.add_argument('--heads', help='Number of attention heads',
+                    type=int, default=DEFAULT_HYPERPARAMS.num_heads)
+parser.add_argument('--dropout', help='Dropout rate',
+                    type=float, default=DEFAULT_HYPERPARAMS.dropout_rate)
 parser.add_argument('--disable-wandb', help='Whether to enable Weights & Biases (wandb) integration',
                     action='store_true')
 args = parser.parse_args()
@@ -47,7 +56,7 @@ brain = Brain(
         dropout_rate=args.dropout,
     ),
     base_dataset_path=args.base_data_path,
-    output_dir_path=args.out,
+    model_dir_path=args.out,
     train_dataset_path=args.train_data,
     valid_dataset_path=args.valid_data,
     enable_wandb=not args.disable_wandb,

@@ -26,7 +26,7 @@ theory = Theory(
         num_heads=NUM_HEADS,
         dropout_rate=DROPOUT_RATE
     ),
-    output_dir_path=OUTPUT_DIR,
+    output_dir_path=MODEL_DIR,
     train_dataset_path=TRAIN_DATASET_PATH,
     valid_dataset_path=VALID_DATASET_PATH,
     data_map_path=DATA_MAP_PATH,

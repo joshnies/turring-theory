@@ -2,6 +2,7 @@ import os
 import re
 from os import path
 from typing import List, Optional
+import shutil
 
 from theory.languages.std.definition import StdLangDefinition
 from cli import log
@@ -42,6 +43,12 @@ class CSharpDefinition(StdLangDefinition):
         if added_file_paths is not None:
             for file_path in added_file_paths:
                 os.system(f'mv {file_path} {sln_path}')
+
+        # Copy target libs to project
+        lib_path = os.path.join(project_path, 'Application', 'lib')
+        os.makedirs(lib_path, exist_ok=True)
+        shutil.copy(
+            'target_libs/cobol_to_csharp_9/TheoryKitCobol.dll', lib_path)
 
         # Install packages
         CSharpDefinition.install_package(sln_path, 'MySql.Data')

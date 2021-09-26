@@ -22,12 +22,12 @@ loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
 class Brain:
     """Translation neural network abstraction."""
 
-    def __init__(self, lvp: LVP, hyperparams: Hyperparams, output_dir_path: str, base_dataset_path: str = 'data',
+    def __init__(self, lvp: LVP, hyperparams: Hyperparams, model_dir_path: str, base_dataset_path: str = 'data',
                  train_dataset_path: str = None, valid_dataset_path: str = None, enable_wandb: bool = True,
                  debug: bool = False):
         self.lvp = lvp
         self.hyperparams = hyperparams
-        self.output_dir_path = output_dir_path
+        self.model_dir_path = model_dir_path
         self.train_dataset_path = \
             path.join(base_dataset_path,
                       f'{lvp.value.lower()}_train.csv') if train_dataset_path is None else train_dataset_path
@@ -54,7 +54,7 @@ class Brain:
             print(self.hyperparams)
 
         # Configure checkpoints
-        self.checkpoint_path = path.join(self.output_dir_path, 'checkpoints')
+        self.checkpoint_path = path.join(self.model_dir_path, 'checkpoints')
 
         self.ckpt = tf.train.Checkpoint(
             transformer=self.transformer, optimizer=self.optimizer)
@@ -78,11 +78,10 @@ class Brain:
                                                      valid_path=self.valid_dataset_path)
 
         # Create tokenizers output directory (recursive)
-        base_tokenizers_path = path.join(self.output_dir_path, 'tokenizers')
-        src_tokenizer_prefix = path.join(base_tokenizers_path, 'src')
-        tar_tokenizer_prefix = path.join(base_tokenizers_path, 'tar')
+        src_tokenizer_prefix = path.join(self.model_dir_path, 'src')
+        tar_tokenizer_prefix = path.join(self.model_dir_path, 'tar')
 
-        os.makedirs(base_tokenizers_path, exist_ok=True)
+        os.makedirs(self.model_dir_path, exist_ok=True)
 
         if path.exists(f'{src_tokenizer_prefix}.subwords'):
             # Load source tokenizer

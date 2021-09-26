@@ -9,7 +9,7 @@ __debug = os.environ.get('DEBUG')
 DEBUG = bool(int(__debug)) if __debug is not None else False
 
 # Neural network
-OUTPUT_DIR = os.environ.get('OUTPUT_DIR')
+MODEL_DIR = 'model'
 TRAIN_DATASET_PATH = os.environ.get('TRAIN_DATASET_PATH')
 VALID_DATASET_PATH = os.environ.get('VALID_DATASET_PATH')
 DATA_MAP_PATH = os.environ.get('DATA_MAP_PATH')
