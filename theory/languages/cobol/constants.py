@@ -594,7 +594,8 @@ COBOL_COMPUTER_REGEX = re.compile(r'^.+-COMPUTER\s*\..*$')
 COBOL_SPECIAL_NAMES_REGEX = re.compile(r'^SPECIAL-NAMES\..*$')
 COBOL_PARAGRAPH_OR_SECTION_REGEX = re.compile(
     rf'^(?P<mask>{gen_mask_token(0)})(?P<section>\s+SECTION)?(?P<exit>\.\s+EXIT)?$')
-COBOL_PARAGRAPH_OR_SECTION_SRC_REGEX = re.compile(rf'^(?P<name>[0-9a-zA-Z\-:]+)(?P<section>\s+SECTION)?$')
+COBOL_PARAGRAPH_OR_SECTION_SRC_REGEX = re.compile(
+    rf'^(?P<name>[0-9a-zA-Z\-:]+)(?P<section>\s+SECTION)?$')
 COBOL_ENTRY_REGEX = re.compile(r'^ENTRY\s+.*$')
 COBOL_CALL_REGEX = re.compile(
     fr'^CALL\s+[\'"]?(?P<name>{gen_mask_token(0)})[\'"]?(?P<using>\s+USING\s+)?(?P<args>.+)?$')
@@ -609,7 +610,8 @@ COBOL_COPY_REGEX = re.compile(
 )
 COBOL_SET_ADDRESS_REGEX = re.compile(r'SET ADDRESS OF\s+.*\n+\s+(?:TO)+.*')
 COBOL_EXEC_BLOCK_REGEX = re.compile(r'EXEC((?!END-EXEC).)*END-EXEC', re.DOTALL)
-COBOL_LENGTH_OF_REGEX = re.compile(rf'LENGTH\s+OF\s+(?P<var_name>{MASK_TOKEN_REGEX_STR})')
+COBOL_LENGTH_OF_REGEX = re.compile(
+    rf'LENGTH\s+OF\s+(?P<var_name>{MASK_TOKEN_REGEX_STR})')
 COBOL_DB_SCHEMA_REGEX = re.compile(r'^DB\s+.+$')
 COBOL_SUBVALUE_REGEX = re.compile(
     fr'^(?P<name>{MASK_TOKEN_REGEX_STR})\s*\(\s*(?P<start>{MASK_TOKEN_REGEX_STR})(?:\s*:\s*)?(?P<length>{MASK_TOKEN_REGEX_STR})?\s*\)$')
@@ -618,7 +620,8 @@ COBOL_SUBVALUE_REGEX = re.compile(
 COBOL_GROUP_ITEM_REGEX = re.compile(
     r'^(?P<lvl>\d{2})\s+(?P<name>[0-9a-zA-Z\-:]+)(?P<redefines>\s+REDEFINES\s+[0-9a-zA-Z\-:]+)?$'
 )
-COBOL_ELEM_ITEM_REGEX = re.compile(r'^(?P<lvl>\d{2})\s+(?P<name>[0-9a-zA-Z\-:]+)\s+(?:PIC|VALUES?)\s+[^.]+$')
+COBOL_ELEM_ITEM_REGEX = re.compile(
+    r'^(?P<lvl>\d{2})\s+(?P<name>[0-9a-zA-Z\-:]+)\s+(?:PIC|VALUES?)\s+[^.]+$')
 COBOL_GROUP_ITEM_MASKED_REGEX = re.compile(
     rf'^{gen_mask_token(0)}\s+{gen_mask_token(1)}(?P<redefines>\s+REDEFINES\s+{MASK_TOKEN_REGEX_STR})?(?:\s+VALUE\s+.*)?$'
 )
@@ -663,13 +666,16 @@ COBOL_MOVE_REGEX = re.compile(
 
 # Switch statement regexes
 COBOL_WHEN_REGEX = re.compile(rf'^WHEN\s+[\'"]?{gen_mask_token(0)}[\'"]?$')
-COBOL_WHEN_PERFORM_REGEX = re.compile(rf'^WHEN\s+[\'"]?{gen_mask_token(0)}[\'"]?\s+PERFORM\s+{gen_mask_token(1)}$')
+COBOL_WHEN_PERFORM_REGEX = re.compile(
+    rf'^WHEN\s+[\'"]?{gen_mask_token(0)}[\'"]?\s+PERFORM\s+{gen_mask_token(1)}$')
 COBOL_WHEN_MOVE_REGEX = re.compile(
     rf'^WHEN\s+[\'"]?{gen_mask_token(0)}[\'"]?\s+MOVE\s+{gen_mask_token(1)}\s+TO\s+{gen_mask_token(2)}$'
 )
 COBOL_WHEN_OTHER_REGEX = re.compile(rf'^WHEN\s+OTHER$')
-COBOL_WHEN_OTHER_PERFORM_REGEX = re.compile(rf'^WHEN\s+OTHER\s+PERFORM\s+{gen_mask_token(0)}$')
-COBOL_WHEN_OTHER_MOVE_REGEX = re.compile(rf'^WHEN\s+OTHER\s+MOVE\s+{gen_mask_token(0)}\s+TO\s+{gen_mask_token(1)}$')
+COBOL_WHEN_OTHER_PERFORM_REGEX = re.compile(
+    rf'^WHEN\s+OTHER\s+PERFORM\s+{gen_mask_token(0)}$')
+COBOL_WHEN_OTHER_MOVE_REGEX = re.compile(
+    rf'^WHEN\s+OTHER\s+MOVE\s+{gen_mask_token(0)}\s+TO\s+{gen_mask_token(1)}$')
 COBOL_END_EVALUATE_REGEX = re.compile(r'^END-EVALUATE$')
 
 # IO regexes
@@ -680,13 +686,17 @@ COBOL_SRC_FILE_DATA_REGEX = re.compile(
     rf'^(?:FD|SD)\s+(?P<file_name>[0-9a-zA-Z\-:]+)(?:\s+DATA\s+RECORD\s+IS\s+(?P<data_name>[0-9a-zA-Z\-:]+))?$')
 COBOL_FILE_DATA_REGEX = re.compile(
     rf'^(?P<type>FD|SD)\s+{gen_mask_token(0)}(?:\s+DATA\s+RECORD\s+IS\s+{gen_mask_token(1)})?$')
-COBOL_OPEN_INPUT_REGEX = re.compile(rf'^OPEN\s+INPUT\s+{gen_mask_token(0)}\s*?$')
-COBOL_OPEN_EXTEND_REGEX = re.compile(rf'^OPEN\s+EXTEND\s+{gen_mask_token(0)}\s*?$')
-COBOL_OPEN_OUTPUT_REGEX = re.compile(rf'^OPEN\s+OUTPUT\s+{gen_mask_token(0)}\s*?$')
+COBOL_OPEN_INPUT_REGEX = re.compile(
+    rf'^OPEN\s+INPUT\s+{gen_mask_token(0)}\s*?$')
+COBOL_OPEN_EXTEND_REGEX = re.compile(
+    rf'^OPEN\s+EXTEND\s+{gen_mask_token(0)}\s*?$')
+COBOL_OPEN_OUTPUT_REGEX = re.compile(
+    rf'^OPEN\s+OUTPUT\s+{gen_mask_token(0)}\s*?$')
 COBOL_END_READ_REGEX = re.compile(r'^END-READ\s*$')
 COBOL_END_WRITE_REGEX = re.compile(r'^END-WRITE\s*$')
 COBOL_CLOSE_FILE_REGEX = re.compile(rf'^CLOSE\s+(?P<files>[^.]*)$')
-COBOL_WRITE_REGEX = re.compile(rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}$')
+COBOL_WRITE_REGEX = re.compile(
+    rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}$')
 COBOL_WRITE_AFTER_ADVANCING_REGEX = re.compile(
     rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+AFTER\s+ADVANCING(?:\s+(?:PAGE|LINE))?$')
 COBOL_WRITE_AFTER_ADVANCING_N_LINES_REGEX = re.compile(
@@ -696,7 +706,8 @@ COBOL_WRITE_BEFORE_ADVANCING_REGEX = re.compile(
 COBOL_WRITE_BEFORE_ADVANCING_N_LINES_REGEX = re.compile(
     rf'^WRITE\s+{gen_mask_token(0)}\s+FROM\s+{gen_mask_token(1)}\s+BEFORE\s+ADVANCING\s+{gen_mask_token(2)}(?:\s+LINES?|PAGE)?$')
 COBOL_READ_REGEX = re.compile(rf'^READ\s+{gen_mask_token(0)}$')
-COBOL_READ_AT_END_REGEX = re.compile(rf'^READ\s+{gen_mask_token(0)}\s+AT\s+END\s+(?P<at_end>.+)$')
+COBOL_READ_AT_END_REGEX = re.compile(
+    rf'^READ\s+{gen_mask_token(0)}\s+AT\s+END\s+(?P<at_end>.+)$')
 COBOL_READ_INTO_REGEX = re.compile(
     rf'^READ\s+{gen_mask_token(0)}\s+INTO\s+{gen_mask_token(1)}$')
 COBOL_READ_INTO_AT_END_REGEX = re.compile(
@@ -718,7 +729,8 @@ COBOL_FORMAT_WRITE_REGEX = re.compile(
     r'WRITE\s+[0-9a-zA-Z\-:]+\s+FROM\s+[0-9a-zA-Z\-:]+(?:\s+AFTER\s+ADVANCING\s+(?:\d+\s+(?:LINES?|PAGES?))?(?:[0-9a-zA-Z\-:]+)?)?\.',
     re.DOTALL
 )
-COBOL_FORMAT_RETURN_REGEX = re.compile(r'RETURN\s+[0-9a-zA-Z\-:]+(?:\s+AT\s+END\s+[^.]+)?\s*\.', re.DOTALL)
+COBOL_FORMAT_RETURN_REGEX = re.compile(
+    r'RETURN\s+[0-9a-zA-Z\-:]+(?:\s+AT\s+END\s+[^.]+)?\s*\.', re.DOTALL)
 COBOL_FORMAT_DISPLAY_REGEX = re.compile(r'DISPLAY\s+[^.]+\.', re.DOTALL)
 COBOL_FORMAT_REDEFINES_REGEX = re.compile(
     r'\d{2}\s+[0-9a-zA-Z\-:]+\s+REDEFINES\s+[0-9a-zA-Z\-:]+\s+PIC\s+[^.]*\.', re.DOTALL
@@ -729,15 +741,22 @@ COBOL_FORMAT_PIC_REGEX = re.compile(
 COBOL_FORMAT_PIC_COMMA_RM_REGEX = re.compile(
     r'\d{2}\s+(?P<name>[0-9a-zA-Z\-:]+)(?:\s+PIC\s+[^.\s]+)?'
 )
-COBOL_FORMAT_FILE_DATA_REGEX = re.compile(r'(?:FD|SD)\s+[^.]*\s*\.?', re.DOTALL)
+COBOL_FORMAT_FILE_DATA_REGEX = re.compile(
+    r'(?:FD|SD)\s+[^.]*\s*\.?', re.DOTALL)
 COBOL_FORMAT_ENTRY_REGEX = re.compile(r'ENTRY\s+[^.]*\.', re.DOTALL)
 COBOL_FORMAT_IF_REGEX = re.compile(r'IF\s+\([^\)]+\)', re.DOTALL)
-COBOL_FORMAT_IF_ENDS_REGEX = re.compile(rf'IF\s+[^.]+\.(?!\s*{SCOPE_CLOSE_TOKEN})', re.DOTALL)
-COBOL_FORMAT_RM_PROTOCOL_REGEX = re.compile(r'PROTOCOL\.\s+[\w\s-]+\.', re.DOTALL)
-COBOL_FORMAT_RM_RECORDING_MODE_REGEX = re.compile(r'RECORDING\s+MODE\s+IS\s+[0-9a-zA-Z\-:]+', re.DOTALL)
-COBOL_FORMAT_RM_BLOCK_CONTAINS_REGEX = re.compile(r'BLOCK\s+CONTAINS\s+\d+\s+RECORDS', re.DOTALL)
-COBOL_FORMAT_RM_RECORD_CONTAINS_REGEX = re.compile(r'RECORD\s+CONTAINS\s+\d+\s+CHARACTERS', re.DOTALL)
-COBOL_FORMAT_RM_LABEL_REGEX = re.compile(r'LABEL\s+RECORDS\s+ARE\s+STANDARD', re.DOTALL)
+COBOL_FORMAT_IF_ENDS_REGEX = re.compile(
+    rf'IF\s+[^.]+\.(?!\s*{SCOPE_CLOSE_TOKEN})', re.DOTALL)
+COBOL_FORMAT_RM_PROTOCOL_REGEX = re.compile(
+    r'PROTOCOL\.\s+[\w\s-]+\.', re.DOTALL)
+COBOL_FORMAT_RM_RECORDING_MODE_REGEX = re.compile(
+    r'RECORDING\s+MODE\s+IS\s+[0-9a-zA-Z\-:]+', re.DOTALL)
+COBOL_FORMAT_RM_BLOCK_CONTAINS_REGEX = re.compile(
+    r'BLOCK\s+CONTAINS\s+\d+\s+RECORDS', re.DOTALL)
+COBOL_FORMAT_RM_RECORD_CONTAINS_REGEX = re.compile(
+    r'RECORD\s+CONTAINS\s+\d+\s+CHARACTERS', re.DOTALL)
+COBOL_FORMAT_RM_LABEL_REGEX = re.compile(
+    r'LABEL\s+RECORDS\s+ARE\s+STANDARD', re.DOTALL)
 COBOL_FORMAT_RM_COMMENTS_REGEX = re.compile(r'\*.*')
 
 COBOL_FORMAT_RM_REGEXES = [
@@ -759,7 +778,8 @@ COBOL_FORMAT_MULTILINE_REGEXES = [
 
 # Add multiline formatting regexes for "MOVE" statements
 for count in range(2, 6):
-    destinations = [r'(?!PERFORM|MOVE|NEXT|ELSE|ELIF|OBTAIN)[0-9a-zA-Z\-:]+'] * count
+    destinations = [
+        r'(?!PERFORM|MOVE|NEXT|ELSE|ELIF|OBTAIN)[0-9a-zA-Z\-:]+'] * count
     destinations = r'\s+'.join(destinations)
     move_re = re.compile(
         f'MOVE\s+(?:CORRESPONDING\s+)?[\'"]?[0-9a-zA-Z\-:]+[\'"]?\s+TO\s+{destinations}\.?',
@@ -769,10 +789,14 @@ for count in range(2, 6):
 
 # MTL regexes
 COBOL_ISOLATED_KEYWORDS = r'COMP(?:-\d+)?|BINARY|PACKED-DECIMAL'
-COBOL_ISOLATED_KEYWORD_NEWLINE_REGEX = re.compile(rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\n')
-COBOL_ISOLATED_KEYWORD_SPACE_REGEX = re.compile(rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\s')
-COBOL_ISOLATED_KEYWORD_DOT_REGEX = re.compile(rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\.')
-COBOL_RETURN_AT_END_REGEX = re.compile(fr'RETURN\s+{MASK_TOKEN_REGEX_STR}\s+AT\s+END\s+(?P<at_end>.+)')
+COBOL_ISOLATED_KEYWORD_NEWLINE_REGEX = re.compile(
+    rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\n')
+COBOL_ISOLATED_KEYWORD_SPACE_REGEX = re.compile(
+    rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\s')
+COBOL_ISOLATED_KEYWORD_DOT_REGEX = re.compile(
+    rf'\s(?:{COBOL_ISOLATED_KEYWORDS})\.')
+COBOL_RETURN_AT_END_REGEX = re.compile(
+    fr'RETURN\s+{MASK_TOKEN_REGEX_STR}\s+AT\s+END\s+(?P<at_end>.+)')
 COBOL_GLOBAL_FILE_DATA_REGEX = re.compile(
     rf'(?:FD|SD)\s+(?P<file_name>{MASK_TOKEN_REGEX_STR})(?:\s+DATA\s+RECORD\s+IS\s+(?P<data_name>{MASK_TOKEN_REGEX_STR}))?'
 )
@@ -783,19 +807,26 @@ COBOL_REPL_FILE_DATA_REFS_REGEX = re.compile(
 # IDMS
 COBOL_IDMS_BIND_REGEX = re.compile(r'^BIND\s+.+$')
 COBOL_IDMS_READY_REGEX = re.compile(r'^READY\s+.+\s+USAGE-MODE\s+.+$')
-COBOL_IDMS_OBTAIN_FIRST_REGEX = re.compile(rf'^OBTAIN\s+FIRST\s+{gen_mask_token(0)}\s+WITHIN\s+{gen_mask_token(1)}$')
-COBOL_IDMS_OBTAIN_NEXT_REGEX = re.compile(rf'^OBTAIN\s+NEXT\s+{gen_mask_token(0)}\s+WITHIN\s+{gen_mask_token(1)}$')
-COBOL_IDMS_OBTAIN_OWNER_REGEX = re.compile(rf'^OBTAIN\s+OWNER\s+WITHIN\s+{gen_mask_token(0)}$')
+COBOL_IDMS_OBTAIN_FIRST_REGEX = re.compile(
+    rf'^OBTAIN\s+FIRST\s+{gen_mask_token(0)}\s+WITHIN\s+{gen_mask_token(1)}$')
+COBOL_IDMS_OBTAIN_NEXT_REGEX = re.compile(
+    rf'^OBTAIN\s+NEXT\s+{gen_mask_token(0)}\s+WITHIN\s+{gen_mask_token(1)}$')
+COBOL_IDMS_OBTAIN_OWNER_REGEX = re.compile(
+    rf'^OBTAIN\s+OWNER\s+WITHIN\s+{gen_mask_token(0)}$')
 COBOL_IDMS_OBTAIN_WITHIN_USING_REGEX = re.compile(
     rf'^OBTAIN\s+{gen_mask_token(0)}\s+WITHIN\s+{gen_mask_token(1)}\s+USING\s+{gen_mask_token(2)}$'
 )
-COBOL_IDMS_OBTAIN_CALC_REGEX = re.compile(rf'^OBTAIN\s+CALC\s+{gen_mask_token(0)}$')
+COBOL_IDMS_OBTAIN_CALC_REGEX = re.compile(
+    rf'^OBTAIN\s+CALC\s+{gen_mask_token(0)}$')
 COBOL_PERFORM_IDMS_STATUS_REGEX = re.compile(r'^PERFORM\s+IDMS-STATUS$')
 COBOL_IDMS_DB_END_OF_SET_REGEX = re.compile(r'^(?P<not>NOT\s+)?DB-END-OF-SET$')
-COBOL_IDMS_IF_DB_END_OF_SET_REGEX = re.compile(r'^IF\s+(?P<not>NOT\s+)?DB-END-OF-SET(?:\s+THEN)?$')
+COBOL_IDMS_IF_DB_END_OF_SET_REGEX = re.compile(
+    r'^IF\s+(?P<not>NOT\s+)?DB-END-OF-SET(?:\s+THEN)?$')
 COBOL_IDMS_NOT_ANY_ERROR_STATUS_REGEX = re.compile(r'^NOT\s+ANY-ERROR-STATUS$')
-COBOL_IDMS_IF_ANY_ERROR_STATUS_REGEX = re.compile(r'^IF\s+ANY-ERROR-STATUS(?:\s+THEN)?$')
-COBOL_IDMS_IF_NOT_ANY_ERROR_STATUS_REGEX = re.compile(r'^IF\s+NOT\s+ANY-ERROR-STATUS(?:\s+THEN)?$')
+COBOL_IDMS_IF_ANY_ERROR_STATUS_REGEX = re.compile(
+    r'^IF\s+ANY-ERROR-STATUS(?:\s+THEN)?$')
+COBOL_IDMS_IF_NOT_ANY_ERROR_STATUS_REGEX = re.compile(
+    r'^IF\s+NOT\s+ANY-ERROR-STATUS(?:\s+THEN)?$')
 
 COBOL_IGNORED_COPYBOOKS = [
     # IDMS
