@@ -44,7 +44,7 @@ class CSharpDefinition(StdLangDefinition):
             for file_path in added_file_paths:
                 os.system(f'mv {file_path} {sln_path}')
 
-        # Copy target libs to project
+        # Copy target lib to project
         lib_path = os.path.join(project_path, 'Application', 'lib')
         os.makedirs(lib_path, exist_ok=True)
         shutil.copy(
